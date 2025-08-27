@@ -1,4 +1,4 @@
-import os
+iimport os
 import datetime
 import openai
 
@@ -97,6 +97,61 @@ else:
     deals_block = content.strip()
 
 # Escape HTML special characters and wrap inside <pre>
+escaped = deals_block.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+html_content = f"<pre>{escaped}</pre>\n"
+
+# Write full block to index.html
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+# Define sections with proper emoji headings
+sections = {
+    "🔥 TODAY’S HOT DEALS  🔥": "todayshotdeals.html",
+    "🔥 BEST PREROLL DEALS 🔥": "bestprerolldeals.html",
+    "🌳 BEST FLOWER DEALS 🌳": "bestflowerdeals.html",
+    "☀ BEST DISTILLATE DEALS ☀": "bestdistillatedeals.html",
+    "🧊 BEST VAPE CART DEALS 🧊": "bestvapecartdeals.html",
+    "🧴 BEST TOPICAL DEALS 🧴": "besttopicaldeals.html",
+    "🍭 BEST EDIBLE DEALS 🍭": "bestedibledeals.html"
+}
+
+# Initialize lines for each section
+section_lines = {heading: [] for heading in sections}
+current_section = None
+
+# Go through each line and assign to appropriate section
+for line in deals_block.split("\n"):
+    stripped = line.strip()
+    # Check if this line is a heading
+    for heading in sections:
+        # Remove markdown bold syntax for matching
+        plain_heading = heading
+        if plain_heading in stripped:
+            current_section = heading
+            break
+    else:
+        if current_section:
+            # Add non-empty lines to the current section
+            if stripped:
+                section_lines[current_section].append(stripped)
+
+# Write each section to its corresponding HTML file
+for heading, filename in sections.items():
+    lines = section_lines[heading]
+    if lines:
+        section_content = "\n".join(lines)
+        # Escape HTML
+        escaped_section = section_content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        section_html = f"<pre>{escaped_section}</pre>\n"
+    else:
+        section_html = "<pre>No deals found.</pre>\n"
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(section_html)
+
+# Write date to date.html
+with open("date.html", "w", encoding="utf-8") as f:
+    f.write(now.strftime("%B %d, %Y"))
+racters and wrap inside <pre>
 escaped = deals_block.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 html_content = f"<pre>{escaped}</pre>\n"
 
