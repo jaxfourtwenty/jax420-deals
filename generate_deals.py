@@ -151,7 +151,7 @@ for heading, filename in sections.items():
 # Write date to date.html
 with open("date.html", "w", encoding="utf-8") as f:
     f.write(now.strftime("%B %d, %Y"))
-racters and wrap inside <pre>
+    # Escape HTML special characters and wrap inside <pre>
 escaped = deals_block.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 html_content = f"<pre>{escaped}</pre>\n"
 
